@@ -15,7 +15,10 @@ export async function POST(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        {
+          message: "Invalid credentials",
+          data: [],
+        },
         { status: 401 }
       );
     }
@@ -24,7 +27,10 @@ export async function POST(request: Request) {
 
     if (!isValid) {
       return NextResponse.json(
-        { message: "Invalid credentials" },
+        {
+          message: "Invalid credentials",
+          data: [],
+        },
         { status: 401 }
       );
     }
@@ -38,27 +44,27 @@ export async function POST(request: Request) {
 
     // Create response
     const response = NextResponse.json({
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    });
-
-    // Set cookie in the response
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 8, // 8 hours
+      message: "Login successful",
+      data: [
+        {
+          token,
+          user: {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          },
+        },
+      ],
     });
 
     return response;
   } catch (error) {
     return NextResponse.json(
-      { message: "Internal server error" },
+      {
+        message: "Internal server error",
+        data: [],
+      },
       { status: 500 }
     );
   }

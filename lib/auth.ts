@@ -8,6 +8,8 @@ import {
 import { z } from "zod";
 import { api } from "./api-client";
 import { AuthResponse, User } from "@/types/api";
+import { Response } from "@/types/response";
+import { updateToken } from "@/app/auth/login/action";
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -25,9 +27,9 @@ export async function verifyPassword(
 // these are not part of features as this is a module shared across features
 
 export const getUser = async (): Promise<User> => {
-  const response = (await api.get("/auth/me")) as { data: User };
+  const response = (await api.get("/auth/me")) as User;
 
-  return response.data;
+  return response;
 };
 
 const userQueryKey = ["user"];
@@ -41,13 +43,7 @@ export const getUserQueryOptions = () => {
 
 export const useUser = () => useQuery(getUserQueryOptions());
 
-export const useLogin = ({
-  onSuccess,
-  onError,
-}: {
-  onSuccess?: () => void;
-  onError?: () => void;
-}) => {
+export const useLogin = ({ onSuccess }: { onSuccess?: () => void }) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: loginWithEmailAndPassword,
@@ -94,9 +90,11 @@ export type LoginInput = z.infer<typeof loginInputSchema>;
 const loginWithEmailAndPassword = async (
   data: LoginInput
 ): Promise<AuthResponse> => {
-  const response: AuthResponse = await api.post("/auth/login", data);
-  // Remove the direct cookie setting from here as it should be handled by the API
-  return response;
+  const response: Response<AuthResponse> = await api.post("/auth/login", data);
+
+  updateToken(response.data[0].token); 
+
+  return response.data[0];
 };
 
 export const registerInputSchema = z

@@ -5,6 +5,7 @@ export type AuthResponse = {
     email: string;
     name: string;
     role: string;
+    created_at: Date;
   };
 };
 
@@ -13,4 +14,6 @@ export type User = {
   name: string;
   email: string;
   role: string;
+  created_at: Date;
+  group_id: number;
 };

@@ -1,3 +1,6 @@
+"use client";
+
+import { getToken } from "@/app/auth/login/action";
 import { toast } from "sonner";
 
 type RequestOptions = {
@@ -68,11 +71,14 @@ async function fetchApi<T>(
 
   const fullUrl = buildUrlWithParams(`/api${url}`, params);
 
+  const token = await getToken();
+
   const response = await fetch(fullUrl, {
     method,
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
+      Authorization: `Bearer ${token}`,
       ...headers,
       ...(cookieHeader ? { Cookie: cookieHeader } : {}),
     },

@@ -10,9 +10,15 @@ export async function GET() {
         rooms: true,
       },
     });
-    return NextResponse.json(groups);
+    return NextResponse.json({
+      message: "Groups fetched successfully",
+      data: groups
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch groups" }, { status: 500 });
+    return NextResponse.json({
+      message: "Failed to fetch groups",
+      data: null
+    }, { status: 500 });
   }
 }
 
@@ -23,8 +29,14 @@ export async function POST(request: Request) {
     const group = await prisma.group.create({
       data: json,
     });
-    return NextResponse.json(group, { status: 201 });
+    return NextResponse.json({
+      message: "Group created successfully",
+      data: group
+    }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create group" }, { status: 500 });
+    return NextResponse.json({
+      message: "Failed to create group",
+      data: null
+    }, { status: 500 });
   }
 }

@@ -16,9 +16,15 @@ export async function GET() {
         group: true,
       },
     });
-    return NextResponse.json(users);
+    return NextResponse.json({
+      message: "Users fetched successfully",
+      data: users
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+    return NextResponse.json({
+      message: "Failed to fetch users",
+      data: []
+    }, { status: 500 });
   }
 }
 
@@ -42,8 +48,36 @@ export async function POST(request: Request) {
         created_at: true,
       },
     });
-    return NextResponse.json(user, { status: 201 });
+    return NextResponse.json({
+      message: "User created successfully",
+      data: user
+    }, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+    return NextResponse.json({
+      message: "Failed to create user",
+      data: []
+    }, { status: 500 });
+  }
+}
+
+// PUT update user
+export async function PUT(request: Request) {
+  try {
+    const json = await request.json();
+    const user = await prisma.user.update({
+      data: json,
+      where: {
+        id: json.id,
+      },
+    });
+    return NextResponse.json({
+      message: "User updated successfully",
+      data: user
+    }, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({
+      message: "Failed to update user",
+      data: []
+    }, { status: 500 });
   }
 }
