@@ -18,7 +18,7 @@ export default function Home() {
         router.push("/member/room");
       }
     }
-  }, [user]);
+  }, [user, router]);
 
   return <div></div>;
 }

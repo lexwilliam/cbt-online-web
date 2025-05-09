@@ -18,6 +18,7 @@ import { RoomInput, roomSchema } from "@/lib/validations/room";
 import { useInsertRoom } from "../api/insert-room";
 import { useUpdateRoom } from "../api/update-room";
 import { Room } from "@/prisma/generated/client";
+import { useDeleteRoom } from "../api/delete-room";
 
 interface RoomFormProps {
   room?: Room;
@@ -39,6 +40,15 @@ export default function RoomForm({ room, onSuccess }: RoomFormProps = {}) {
     mutationConfig: {
       onSuccess: () => {
         toast.success("Room updated successfully");
+        onSuccess?.();
+      },
+    },
+  });
+
+  const deleteRoom = useDeleteRoom({
+    mutationConfig: {
+      onSuccess: () => {
+        toast.success("Room deleted successfully");
         onSuccess?.();
       },
     },
@@ -69,14 +79,9 @@ export default function RoomForm({ room, onSuccess }: RoomFormProps = {}) {
 
   async function handleDelete() {
     if (!room) return;
-    try {
-      // TODO: Implement delete mutation logic
-      toast.success("Room deleted successfully");
-      onSuccess?.();
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to delete room");
-    }
+    deleteRoom.mutate({
+      id: room.id,
+    });
   }
 
   return (

@@ -1,4 +1,3 @@
-
 import { NextResponse } from "next/server";
 import { hashPassword } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -6,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 // GET single user
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -33,7 +32,7 @@ export async function GET(
 // PUT update user
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -66,7 +65,7 @@ export async function PUT(
 // DELETE user
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
@@ -75,6 +74,7 @@ export async function DELETE(
     });
     return new NextResponse(null, { status: 204 });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to delete user" },
       { status: 500 }

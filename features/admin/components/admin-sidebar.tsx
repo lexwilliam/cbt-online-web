@@ -1,5 +1,6 @@
 "use client";
 
+import LogoutButton from "@/components/auth/logout-button";
 import {
   Sidebar,
   SidebarContent,
@@ -10,21 +11,6 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useUser, useLogout } from "@/lib/auth";
-import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
-
-function LogoutButton() {
-  const router = useRouter();
-  const { mutate: logout } = useLogout({
-    onSuccess: () => router.push("/auth/login"),
-  });
-
-  return (
-    <Button className="w-full" variant={"destructive"} onClick={() => logout()}>
-      Logout
-    </Button>
-  );
-}
 
 export function AdminSidebar() {
   const { data: user, isLoading } = useUser();

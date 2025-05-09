@@ -13,11 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginInput, useLogin } from "@/lib/auth";
+import { LoginInput, loginInputSchema, useLogin } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
-import { loginSchema } from "@/lib/validations/login";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -31,7 +30,7 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginInput>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginInputSchema),
     defaultValues: {
       email: "",
       password: "",

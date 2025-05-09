@@ -18,6 +18,7 @@ export async function GET() {
       data: [rooms],
     });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { message: "Failed to fetch rooms", data: [] },
       { status: 500 }

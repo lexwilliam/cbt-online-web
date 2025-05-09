@@ -1,14 +1,14 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { AdminSidebar } from "@/features/admin/components/admin-sidebar";
+import { MemberSidebar } from "@/features/member/components/member-sidebar";
 
-export default function AppOwnerLayout({
+export default function MemberLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <SidebarProvider>
-      <AdminSidebar />
+      <MemberSidebar />
       <main className="w-full">{children}</main>
     </SidebarProvider>
   );

@@ -1,7 +1,6 @@
 import { prisma } from "../../../../lib/prisma";
 import { verifyPassword } from "../../../../lib/auth";
 import { sign } from "jsonwebtoken";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -60,6 +59,7 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       {
         message: "Internal server error",

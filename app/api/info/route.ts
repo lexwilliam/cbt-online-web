@@ -57,6 +57,7 @@ export async function PUT(request: Request) {
     });
     return NextResponse.json(info, { status: 200 });
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to update info", data: [] },
       { status: 500 }

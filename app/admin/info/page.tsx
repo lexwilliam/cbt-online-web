@@ -15,7 +15,6 @@ import { useGetInfo } from "@/features/info/api/get-info";
 import { useUpdateInfo } from "@/features/info/api/update-info";
 import { infoForm, InfoInput } from "@/lib/validations/info";
 import { zodResolver } from "@hookform/resolvers/zod";
-import router from "next/router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";

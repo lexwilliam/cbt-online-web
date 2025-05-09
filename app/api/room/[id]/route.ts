@@ -4,54 +4,88 @@ import { NextResponse } from "next/server";
 // GET single room
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const room = await prisma.room.findUnique({
-      where: { id: parseInt(params.id) },
-      include: {
-        group: true,
-        info: true,
-      },
+      where: { id: id },
     });
-    return NextResponse.json(room);
+    return NextResponse.json(
+      {
+        message: "Room fetched successfully",
+        data: [room],
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch room" }, { status: 500 });
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "Failed to fetch room",
+        data: [],
+      },
+      { status: 500 }
+    );
   }
 }
 
 // PUT update room
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const json = await request.json();
     const room = await prisma.room.update({
-      where: { id: parseInt(params.id) },
+      where: { id: id },
       data: json,
-      include: {
-        group: true,
-        info: true,
-      },
     });
-    return NextResponse.json(room);
+    return NextResponse.json(
+      {
+        message: "Room updated successfully",
+        data: [room],
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to update room" }, { status: 500 });
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "Failed to update room",
+        data: [],
+      },
+      { status: 500 }
+    );
   }
 }
 
 // DELETE room
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await prisma.room.delete({
-      where: { id: parseInt(params.id) },
+      where: { id: id },
     });
-    return new NextResponse(null, { status: 204 });
+    return NextResponse.json(
+      {
+        message: "Room deleted",
+        data: [],
+      },
+      { status: 200 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to delete room" }, { status: 500 });
+    console.log(error);
+    return NextResponse.json(
+      {
+        message: "Failed to delete room",
+        data: [],
+      },
+      { status: 500 }
+    );
   }
 }

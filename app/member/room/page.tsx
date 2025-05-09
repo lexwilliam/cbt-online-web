@@ -32,7 +32,10 @@ export default function RoomPage() {
   return (
     <div className="flex flex-col w-full gap-4 p-4">
       <div className="flex flex-row gap-4 items-center">
-        <span className="text-xl font-bold">Room List</span>
+        <div className="flex flex-row gap-4">
+          <SidebarTrigger />
+          <span className="text-xl font-bold">Room List</span>
+        </div>
         <div className="flex flex-grow" />
         <div className="flex justify-end">
           <Dialog open={isAddRoomOpen} onOpenChange={setIsAddRoomOpen}>

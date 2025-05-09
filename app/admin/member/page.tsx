@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -14,7 +13,6 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useGetAllMember } from "@/features/member/api/get-all-member";
 import MemberForm from "@/features/member/components/member-form";
 import MemberList from "@/features/member/components/member-list";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MemberPage() {
