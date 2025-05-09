@@ -14,21 +14,28 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 import { UserInput, userSchema } from "@/lib/validations/member";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { User } from "@/types/api";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import { User } from "@/prisma/generated/client";
+import { Button } from "@/components/ui/button";
+import { useDeleteMember } from "../api/delete-member";
 
 interface MemberFormProps {
   member?: User;
+  onSuccess?: () => void;
 }
 
-export default function MemberForm({ member }: MemberFormProps = {}) {
+export default function MemberForm({
+  member,
+  onSuccess,
+}: MemberFormProps = {}) {
   const [isLoading, setIsLoading] = useState(false);
 
   const insertMember = useInsertMember({
     mutationConfig: {
       onSuccess: () => {
         toast.success("Berhasil menambahkan member");
+        onSuccess?.();
       },
     },
   });
@@ -36,6 +43,16 @@ export default function MemberForm({ member }: MemberFormProps = {}) {
     mutationConfig: {
       onSuccess: () => {
         toast.success("Berhasil mengupdate member");
+        onSuccess?.();
+      },
+    },
+  });
+
+  const deleteMember = useDeleteMember({
+    mutationConfig: {
+      onSuccess: () => {
+        toast.success("Berhasil menghapus member");
+        onSuccess?.();
       },
     },
   });
@@ -43,26 +60,37 @@ export default function MemberForm({ member }: MemberFormProps = {}) {
   const form = useForm<UserInput>({
     resolver: zodResolver(userSchema),
     defaultValues: {
-      id: member?.id ?? "",
+      id: member?.id ?? crypto.randomUUID(),
       name: member?.name ?? "",
       email: member?.email ?? "",
+      password: member?.password,
       role: member?.role ?? "USER",
-      created_at: member?.created_at ?? new Date(),
-      group_id: member?.group_id,
     },
   });
 
-  function onSubmit(data: UserInput) {
-    if (member) {
-      updateMember.mutate({ data: data });
-    } else {
-      insertMember.mutate({ data: data });
+  async function handleSubmit(data: UserInput) {
+    setIsLoading(true);
+    try {
+      if (member) {
+        await updateMember.mutateAsync({ data: data });
+      } else {
+        await insertMember.mutateAsync({ data: data });
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  async function handleDelete() {
+    if (!member) return;
+    await deleteMember.mutateAsync({ id: member.id });
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="name"
@@ -89,6 +117,41 @@ export default function MemberForm({ member }: MemberFormProps = {}) {
             </FormItem>
           )}
         />
+        {!member && (
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Masukkan kata sandi"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+        {/* Display form-level errors */}
+        <div className="text-sm text-red-500">
+          {Object.values(form.formState.errors).map((error, index) => (
+            <p key={index}>{error.message}</p>
+          ))}
+        </div>
+        <div className="flex flex-row sm:justify-end gap-2">
+          <Button className="flex-1" type="submit">
+            {isLoading ? "Loading..." : "Simpan"}
+          </Button>
+          {member && (
+            <Button type="button" variant={"destructive"} onClick={handleDelete}>
+              Hapus
+            </Button>
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -7,9 +7,10 @@ import {
 } from "@tanstack/react-query";
 import { z } from "zod";
 import { api } from "./api-client";
-import { AuthResponse, User } from "@/types/api";
+import { AuthResponse } from "@/types/api";
 import { Response } from "@/types/response";
-import { updateToken } from "@/app/auth/login/action";
+import { removeToken, updateToken } from "@/app/auth/login/action";
+import { User } from "@/prisma/generated/client";
 
 export async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
@@ -76,8 +77,8 @@ export const useLogout = ({ onSuccess }: { onSuccess?: () => void }) => {
   });
 };
 
-const logout = (): Promise<void> => {
-  return api.post("/auth/logout");
+const logout = async (): Promise<void> => {
+  await removeToken();
 };
 
 export const loginInputSchema = z.object({
@@ -92,7 +93,7 @@ const loginWithEmailAndPassword = async (
 ): Promise<AuthResponse> => {
   const response: Response<AuthResponse> = await api.post("/auth/login", data);
 
-  updateToken(response.data[0].token); 
+  await updateToken(response.data[0].token);
 
   return response.data[0];
 };

@@ -8,12 +8,3 @@ export type AuthResponse = {
     created_at: Date;
   };
 };
-
-export type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  created_at: Date;
-  group_id: number;
-};

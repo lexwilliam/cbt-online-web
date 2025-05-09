@@ -9,3 +9,7 @@ export async function getToken() {
 export async function updateToken(token: string) {
   (await cookies()).set("token", token);
 }
+
+export async function removeToken() {
+  (await cookies()).delete("token");
+}

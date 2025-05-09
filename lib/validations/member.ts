@@ -5,9 +5,7 @@ export const userSchema = z.object({
   name: z.string().min(1).max(255),
   email: z.string().email().max(255),
   role: z.string().max(50),
-  created_at: z
-    .date(),
-  group_id: z.number().int().optional(),
+  password: z.string().min(1).max(255).optional(),
 });
 
 export type UserInput = z.infer<typeof userSchema>;

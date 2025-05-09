@@ -11,11 +11,25 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useGetAllMember } from "@/features/member/api/get-all-member";
+import MemberForm from "@/features/member/components/member-form";
 import MemberList from "@/features/member/components/member-list";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function MemberPage() {
+  const members = useGetAllMember({});
+
   const [isAddMemberOpen, setIsAddMemberOpen] = useState(false);
+
+  function handleFormSuccess() {
+    setIsAddMemberOpen(false)
+    members.refetch();
+  }
+
+  function handleListSuccess() {
+    members.refetch();
+  }
 
   return (
     <div className="flex flex-col w-full gap-4 p-4">
@@ -27,33 +41,22 @@ export default function MemberPage() {
           <Dialog open={isAddMemberOpen} onOpenChange={setIsAddMemberOpen}>
             <DialogTrigger asChild>
               <Button onClick={() => setIsAddMemberOpen(true)}>
-                Add Member
+                Tambah Member
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Member</DialogTitle>
+                <DialogTitle>Tambah Member Baru</DialogTitle>
                 <DialogDescription>
-                  Fill in the details to add a new member.
+                  Silahkan isi data member baru di bawah ini
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                {/* Add form fields here */}
-              </div>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsAddMemberOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit">Save</Button>
-              </DialogFooter>
+              <MemberForm onSuccess={handleFormSuccess} />
             </DialogContent>
           </Dialog>
         </div>
       </div>
-      <MemberList />
+      <MemberList members={members.data ?? []} onSuccess={handleListSuccess} />
     </div>
   );
 }

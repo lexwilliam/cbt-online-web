@@ -1,18 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-model Group {
-  id         Int       @id @default(autoincrement())
-  name       String    @db.VarChar(255)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
-  rooms      Room[]
-  users      User[]
 }
 
 model User {
@@ -21,38 +14,30 @@ model User {
   email      String    @unique(map: "email") @db.VarChar(255)
   role       String?   @default("USER") @db.VarChar(50)
   created_at DateTime? @default(now()) @db.Timestamp(0)
-  group_id   Int?
   password   String    @db.VarChar(255)
-  group      Group?    @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "user_ibfk_1")
+  rooms      Room[]
   Role       Role?     @relation(fields: [role], references: [role_name], onDelete: NoAction, onUpdate: NoAction, map: "user_ibfk_2")
 
   @@index([email], map: "email_idx")
-  @@index([group_id], map: "group_id")
   @@index([role], map: "role")
 }
 
 model Room {
-  id         Int       @id @default(autoincrement())
+  id         String    @id @default(uuid()) @db.VarChar(36)
   url        String    @db.VarChar(255)
   exit_key   String    @db.VarChar(255)
   created_at DateTime? @default(now()) @db.Timestamp(0)
-  group_id   Int
-  info       Info[]
-  group      Group     @relation(fields: [group_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "room_ibfk_1")
+  owner_id   String?   @db.VarChar(36)
+  User       User?     @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_ibfk_1")
 
-  @@index([group_id], map: "group_id_idx")
+  @@index([owner_id], map: "user_ibfk_1")
 }
 
-model Info {
+model Information {
   id         Int       @id @default(autoincrement())
   aturan     String    @db.VarChar(255)
   info       String    @db.VarChar(255)
-  members    String    @db.Text
   created_at DateTime? @default(now()) @db.Timestamp(0)
-  room_id    Int
-  room       Room      @relation(fields: [room_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "info_ibfk_1")
-
-  @@index([room_id], map: "room_id")
 }
 
 model Role {

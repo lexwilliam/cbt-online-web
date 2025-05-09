@@ -1,8 +1,8 @@
 import { api } from "@/lib/api-client";
 import { MutationConfig } from "@/lib/query-config";
 import { UserInput } from "@/lib/validations/member";
-import { User } from "@/types/api";
 import { Response } from "@/types/response";
+import { User } from "@/prisma/generated/client";
 import { useMutation } from "@tanstack/react-query";
 
 export const insertMember = async ({

@@ -1,34 +1,83 @@
 import { prisma } from "@/lib/prisma";
+import { decode } from "jsonwebtoken";
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 // GET all rooms
 export async function GET() {
   try {
     const rooms = await prisma.room.findMany({
-      include: {
-        group: true,
-        info: true,
+      select: {
+        id: true,
+        url: true,
+        exit_key: true,
       },
     });
-    return NextResponse.json(rooms);
+    return NextResponse.json({
+      message: "Rooms fetched successfully",
+      data: [rooms],
+    });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to fetch rooms" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch rooms", data: [] },
+      { status: 500 }
+    );
   }
 }
 
 // POST create room
 export async function POST(request: Request) {
   try {
+    const headersList = await headers();
+    const authorization = headersList.get("Authorization");
+
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      return NextResponse.json(
+        { message: "Unauthorized", data: [] },
+        { status: 401 }
+      );
+    }
+
+    // Extract token from Bearer
+    const token = authorization.split(" ")[1];
+
+    // Verify and decode the JWT token
+    const decoded = decode(token) as { userId: string };
+
+    if (!decoded.userId) {
+      return NextResponse.json(
+        { message: "Invalid token", data: [] },
+        { status: 401 }
+      );
+    }
+
     const json = await request.json();
-    const room = await prisma.room.create({
-      data: json,
-      include: {
-        group: true,
-        info: true,
+    await prisma.room.create({
+      data: {
+        ...json,
+        owner_id: decoded.userId,
+        created_at: (new Date()).toISOString(),
+      },
+      select: {
+        id: true,
+        url: true,
+        exit_key: true,
+        owner_id: true,
+        created_at: true,
       },
     });
-    return NextResponse.json(room, { status: 201 });
+    return NextResponse.json(
+      {
+        message: "Room created successfully",
+        data: [],
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create room" }, { status: 500 });
+    console.log(error); 
+    return NextResponse.json(
+      { message: "Failed to create room", data: [] },
+      { status: 500 }
+    );
   }
 }
