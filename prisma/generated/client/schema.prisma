@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -30,7 +31,7 @@ model Room {
   owner_id   String?   @db.VarChar(36)
   User       User?     @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "user_ibfk_1")
 
-  @@index([owner_id], map: "user_ibfk_1")
+  @@index([owner_id], map: "user_ibid_1")
 }
 
 model Information {

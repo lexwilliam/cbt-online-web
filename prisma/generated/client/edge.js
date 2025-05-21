@@ -125,33 +125,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  role: 'role',
-  password: 'password'
-};
-
-exports.Prisma.RoomOrderByRelevanceFieldEnum = {
-  id: 'id',
-  url: 'url',
-  exit_key: 'exit_key',
-  owner_id: 'owner_id'
-};
-
-exports.Prisma.InformationOrderByRelevanceFieldEnum = {
-  aturan: 'aturan',
-  info: 'info'
-};
-
-exports.Prisma.RoleOrderByRelevanceFieldEnum = {
-  role_name: 'role_name'
 };
 
 
@@ -190,8 +171,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null,
-    "schemaEnvPath": "../../../.env"
+    "rootEnvPath": null
   },
   "relativePath": "../..",
   "clientVersion": "6.7.0",
@@ -199,7 +179,7 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "mysql",
+  "activeProvider": "postgresql",
   "postinstall": false,
   "inlineDatasources": {
     "db": {
@@ -209,8 +189,8 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id         String    @id @default(uuid()) @db.VarChar(36)\n  name       String    @db.VarChar(255)\n  email      String    @unique(map: \"email\") @db.VarChar(255)\n  role       String?   @default(\"USER\") @db.VarChar(50)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n  password   String    @db.VarChar(255)\n  rooms      Room[]\n  Role       Role?     @relation(fields: [role], references: [role_name], onDelete: NoAction, onUpdate: NoAction, map: \"user_ibfk_2\")\n\n  @@index([email], map: \"email_idx\")\n  @@index([role], map: \"role\")\n}\n\nmodel Room {\n  id         String    @id @default(uuid()) @db.VarChar(36)\n  url        String    @db.VarChar(255)\n  exit_key   String    @db.VarChar(255)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n  owner_id   String?   @db.VarChar(36)\n  User       User?     @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: \"user_ibfk_1\")\n\n  @@index([owner_id], map: \"user_ibfk_1\")\n}\n\nmodel Information {\n  id         Int       @id @default(autoincrement())\n  aturan     String    @db.VarChar(255)\n  info       String    @db.VarChar(255)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n}\n\nmodel Role {\n  role_name String @id @db.VarChar(50)\n  User      User[]\n}\n",
-  "inlineSchemaHash": "52479cf2664b0bbcf7cfa69a3f5ff7a07b50837bd4c7ffeb593b83af3bc51de9",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider  = \"postgresql\"\n  url       = env(\"DATABASE_URL\")\n  directUrl = env(\"DIRECT_URL\")\n}\n\nmodel User {\n  id         String    @id @default(uuid()) @db.VarChar(36)\n  name       String    @db.VarChar(255)\n  email      String    @unique(map: \"email\") @db.VarChar(255)\n  role       String?   @default(\"USER\") @db.VarChar(50)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n  password   String    @db.VarChar(255)\n  rooms      Room[]\n  Role       Role?     @relation(fields: [role], references: [role_name], onDelete: NoAction, onUpdate: NoAction, map: \"user_ibfk_2\")\n\n  @@index([email], map: \"email_idx\")\n  @@index([role], map: \"role\")\n}\n\nmodel Room {\n  id         String    @id @default(uuid()) @db.VarChar(36)\n  url        String    @db.VarChar(255)\n  exit_key   String    @db.VarChar(255)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n  owner_id   String?   @db.VarChar(36)\n  User       User?     @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: \"user_ibfk_1\")\n\n  @@index([owner_id], map: \"user_ibid_1\")\n}\n\nmodel Information {\n  id         Int       @id @default(autoincrement())\n  aturan     String    @db.VarChar(255)\n  info       String    @db.VarChar(255)\n  created_at DateTime? @default(now()) @db.Timestamp(0)\n}\n\nmodel Role {\n  role_name String @id @db.VarChar(50)\n  User      User[]\n}\n",
+  "inlineSchemaHash": "61c8b0286aab7754096292b7dbed63f669a9052e8cef8ffac8386f8f84540d2f",
   "copyEngine": true
 }
 config.dirname = '/'

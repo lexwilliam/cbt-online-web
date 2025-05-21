@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     if (!user) {
       return NextResponse.json(
         {
-          message: "Invalid credentials",
+          message: "Invalid credentials: Email not found",
           data: [],
         },
         { status: 401 }
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
     if (!isValid) {
       return NextResponse.json(
         {
-          message: "Invalid credentials",
+          message: "Invalid credentials: Password is incorrect",
           data: [],
         },
         { status: 401 }

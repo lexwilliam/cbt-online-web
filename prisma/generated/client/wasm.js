@@ -153,33 +153,14 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
-};
-
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  role: 'role',
-  password: 'password'
-};
-
-exports.Prisma.RoomOrderByRelevanceFieldEnum = {
-  id: 'id',
-  url: 'url',
-  exit_key: 'exit_key',
-  owner_id: 'owner_id'
-};
-
-exports.Prisma.InformationOrderByRelevanceFieldEnum = {
-  aturan: 'aturan',
-  info: 'info'
-};
-
-exports.Prisma.RoleOrderByRelevanceFieldEnum = {
-  role_name: 'role_name'
 };
 
 
