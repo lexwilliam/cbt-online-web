@@ -11,6 +11,15 @@ export async function GET(
     const room = await prisma.room.findFirst({
       where: { url: url },
     });
+    if (!room) {
+      return NextResponse.json(
+        {
+          message: "Room not found",
+          data: [],
+        },
+        { status: 404 }
+      );
+    }
     return NextResponse.json(
       {
         message: "Room fetched successfully",
